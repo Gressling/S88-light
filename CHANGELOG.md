@@ -3,6 +3,28 @@
 All notable changes to this project are documented in this file.  
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] – 2026-02-16
+
+### Added
+- **5-dimension directory structure** mirroring the [wiki taxonomy](https://github.com/Gressling/S88-light/wiki):
+  - `dimensions/1_operations/` with subcategories: `api/`, `manual/`, `analytics/`, `formulation/`, `elementary/`
+  - `dimensions/2_sequence/`, `3_events/`, `4_devices/`, `5_materials/`
+- 36 per-operation README.md pages following wiki standard (Description, Example, Ontology)
+- 12 new operation stubs: Extraction, Solvent, PAT, IPC, RollerCompactor, Coating, FluidBedGranulator, EmptyOperation, GenericActor, GenericSensor, ManualInput, EventRecorder, SingleSpectrum
+- Dimension index pages (`dimensions/README.md`, per-dimension READMEs)
+
+### Changed
+- Operations reorganized from flat `operations/` into categorized `dimensions/1_operations/{api,manual,analytics,formulation,elementary}/`
+- Root `README.md`: updated to 5-dimension structure, wiki link as canonical reference
+- `docs/specification.md`: added 5-dimension table, operation category breakdown
+- `docs/operations.md`: expanded from 24 to 36 operations with category headers
+- `dimensions/3_events/README.md`: rewritten concisely with Event, TimeSeries, Eventframe examples
+- Fixed typo: `Destillation/` → `Distillation/`
+
+### Removed
+- Flat `operations/` directory (content moved to `dimensions/1_operations/`)
+- Flat `events/` directory (content moved to `dimensions/3_events/`)
+
 ## [1.0.0] – 2025-01-01
 
 ### Added
