@@ -1,8 +1,20 @@
 # Unit Operation Reference
 
-24 operations are defined. For each, **bold** fields are required; all others are optional. Every operation accepts an optional `SafetyMeasures` (string) unless noted otherwise.
+36 operations are defined across 5 categories. For each, **bold** fields are required; all others are optional. Every operation accepts an optional `SafetyMeasures` (string) unless noted otherwise.
+
+Per-operation pages with examples are in [`dimensions/1_operations/`](../dimensions/1_operations/).
+
+| Category | Operations |
+|---|---|
+| **API** (16) | Absorption, Centrifugation, Crystallization, Distillation, Dry, Evaporation, Extraction, Fermentation, Filtration, HeatExchange, Temperature, IonExchange, MembraneSeparation, Mixing, Pulverization, Stirring |
+| **Manual** (9) | AddOnce, Cleaning, GeneralCleaning, Disposing, Prepare, Setup, Solvent, Washing, Weighing |
+| **Analytics** (2) | PAT, IPC |
+| **Formulation** (3) | RollerCompactor, Coating, FluidBedGranulator |
+| **Elementary** (6) | EmptyOperation, GenericActor, GenericSensor, ManualInput, EventRecorder, SingleSpectrum |
 
 ---
+
+# API Operations
 
 ## Prepare
 Prepare raw materials before processing.
@@ -324,3 +336,130 @@ Human-in-the-loop intervention. Does not carry `SafetyMeasures`.
 | Description | string |
 | Timing | string |
 | Criteria | string |
+
+---
+
+# Analytics Operations
+
+## PAT
+Process Analytical Technology — in-line or on-line measurement during batch execution.
+
+| Field | Type |
+|---|---|
+| AnalyticalMethod | string |
+| MeasurementFrequency | FlexibleQuantityType |
+| Duration | DurationType |
+| Equipment | string |
+
+## IPC
+In-Process Control — discrete sampling and off-line measurement.
+
+| Field | Type |
+|---|---|
+| TestMethod | string |
+| Sample | string |
+| Specification | string |
+| Equipment | string |
+
+---
+
+# Formulation Operations
+
+## RollerCompactor
+Dry granulation by roll compaction.
+
+| Field | Type |
+|---|---|
+| FeedMaterial | string |
+| RollPressure | FlexibleQuantityType |
+| RollSpeed | FlexibleQuantityType |
+| GapWidth | FlexibleQuantityType |
+| GranuleSize | FlexibleQuantityType |
+| Equipment | string |
+
+## Coating
+Application of a coating layer to particles or tablets.
+
+| Field | Type |
+|---|---|
+| CoreMaterial | string |
+| CoatingMaterial | string |
+| CoatingMethod | string |
+| SprayRate | FlexibleQuantityType |
+| Temperature | TemperatureType |
+| Duration | DurationType |
+| Equipment | string |
+
+## FluidBedGranulator
+Granulation using a fluidised bed.
+
+| Field | Type |
+|---|---|
+| FeedMaterial | string |
+| BinderSolution | string |
+| AirFlowRate | FlexibleQuantityType |
+| InletTemperature | TemperatureType |
+| SprayRate | FlexibleQuantityType |
+| Duration | DurationType |
+| GranuleSize | FlexibleQuantityType |
+| Equipment | string |
+
+---
+
+# Elementary Operations
+
+## EmptyOperation
+No-op placeholder. Used for structural purposes.
+
+| Field | Type |
+|---|---|
+| Description | string |
+
+## GenericActor
+Generic actuator command.
+
+| Field | Type |
+|---|---|
+| DeviceId | string |
+| Command | string |
+| Parameters | string |
+| Duration | DurationType |
+
+## GenericSensor
+Generic sensor reading.
+
+| Field | Type |
+|---|---|
+| DeviceId | string |
+| SensorType | string |
+| MeasurementInterval | DurationType |
+| Duration | DurationType |
+
+## ManualInput
+Prompt for human input during execution.
+
+| Field | Type |
+|---|---|
+| Prompt | string |
+| InputType | string |
+| DefaultValue | string |
+| Timeout | DurationType |
+
+## EventRecorder
+Record a process event.
+
+| Field | Type |
+|---|---|
+| EventType | string |
+| Description | string |
+| Timestamp | string |
+
+## SingleSpectrum
+Single spectrum acquisition.
+
+| Field | Type |
+|---|---|
+| Instrument | string |
+| WavelengthRange | string |
+| IntegrationTime | DurationType |
+| Averages | integer |

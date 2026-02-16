@@ -4,15 +4,17 @@
 
 ## 1. Scope
 
-S88-light defines a minimal XML/JSON schema for batch process chemistry recipes. It captures:
+S88-light defines a minimal XML/JSON schema for batch process chemistry recipes structured along five dimensions:
 
-- An ordered sequence of unit operations
-- Concurrent (parallel) execution blocks
-- Iterative (loop) constructs with break conditions
-- Typed physical quantities with explicit units
-- Material/chemical specifications
+| # | Dimension | Schema coverage |
+|---|---|---|
+| 1 | Operation | 36 unit operations across 5 categories |
+| 2 | Order (Sequence) | `<Recipe>`, `<Sequence>`, `<Parallel>`, `<Loop>` |
+| 3 | Event (Time) | Event, Eventframe, TimeSeries (namespace-level) |
+| 4 | Device | Optional `device` attribute on operations |
+| 5 | Material | `ChemicalType` embedded in operations |
 
-The schema is intentionally limited. It encodes *what* to do and *with what parameters*, not the control logic of *how* equipment executes commands. This distinction follows the ISA-88 separation of procedural control from equipment control.
+The schema encodes *what* to do and *with what parameters*, not the control logic of *how* equipment executes commands. This follows the ISA-88 separation of procedural and equipment control.
 
 ## 2. Data Model
 
@@ -37,9 +39,17 @@ A step is one of:
 
 ### 2.3 Unit Operation
 
-Each operation has a fixed tag name (XML) or `operation` string (JSON) and operation-specific parameters. All operations share the optional field `SafetyMeasures` (string).
+Each operation has a fixed tag name (XML) or `operation` string (JSON) and operation-specific parameters. Operations are classified into five categories per the [wiki taxonomy](https://github.com/Gressling/S88-light/wiki/Unit-Operations):
 
-See [operations.md](operations.md) for the full reference.
+| Category | Count | Examples |
+|---|---|---|
+| **API** (process) | 16 | Stirring, Distillation, Fermentation, Filtration |
+| **Manual** | 9 | AddOnce, Cleaning, Setup, Weighing |
+| **Analytics** | 2 | PAT, IPC |
+| **Formulation** | 3 | RollerCompactor, Coating, FluidBedGranulator |
+| **Elementary** | 6 | EmptyOperation, GenericActor, GenericSensor |
+
+All operations share the optional field `SafetyMeasures` (string). See [operations.md](operations.md) for the full reference and [dimensions/1_operations/](../dimensions/1_operations/) for per-operation pages.
 
 ### 2.4 Type System
 
