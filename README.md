@@ -7,7 +7,7 @@ An open XML/JSON vocabulary for process chemistry recipes, inspired by ISA-88/IE
 ![GitHub contributors](https://img.shields.io/github/contributors/Gressling/S88)
 ![GitHub issues](https://img.shields.io/github/issues/Gressling/S88)
 
-This namespace dictionary ([https://s88.codes](https://s88.codes/)) further develops many flavours of today's XML-based batch standards. It focuses on labs, experiments, semi-batch environments, and data-science usability. It is formed along **five dimensions**:
+This namespace dictionary further develops many flavours of today's XML-based batch standards. It focuses on labs, experiments, semi-batch environments, and data-science usability. It is formed along **five dimensions**:
 
 1. **Operation** — unit operations (the atomic actions)
 2. **Order (Sequence)** — recipe workflow and orchestration
