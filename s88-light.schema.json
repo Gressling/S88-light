@@ -1,0 +1,521 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Gressling/S88-NG/s88-light.schema.json",
+  "title": "S88-light Recipe",
+  "description": "JSON Schema for S88-light process chemistry recipes. Mirrors the unified XSD schema.",
+  "type": "object",
+  "required": ["Sequence"],
+  "properties": {
+    "Metadata": {
+      "type": "object",
+      "description": "Optional recipe metadata",
+      "properties": {
+        "Name": { "type": "string" },
+        "Version": { "type": "string" },
+        "Author": { "type": "string" },
+        "Date": { "type": "string", "format": "date" },
+        "Description": { "type": "string" },
+        "Project": { "type": "string" }
+      }
+    },
+    "Sequence": {
+      "type": "array",
+      "description": "Ordered list of steps (operations, Parallel blocks, or Loops)",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Step" }
+    }
+  },
+
+  "$defs": {
+
+    "Step": {
+      "oneOf": [
+        { "$ref": "#/$defs/OperationStep" },
+        { "$ref": "#/$defs/ParallelStep" },
+        { "$ref": "#/$defs/LoopStep" }
+      ]
+    },
+
+    "OperationStep": {
+      "type": "object",
+      "description": "A single unit operation",
+      "required": ["operation"],
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": [
+            "Prepare", "AddOnce", "Stirring", "Temperature", "Mixing",
+            "Crystallization", "Distillation", "Filtration", "Centrifugation",
+            "Evaporation", "Dry", "Fermentation", "Absorption", "IonExchange",
+            "MembraneSeparation", "Washing", "Pulverization", "Weighing",
+            "HeatExchange", "Setup", "PreCleaning", "PostCleaning",
+            "Disposal", "ManualStep"
+          ]
+        },
+        "name": { "type": "string", "description": "Optional step name/label" },
+        "device": { "type": "string", "description": "Target device (for Prepare, etc.)" },
+        "parameters": { "type": "object" }
+      },
+      "allOf": [
+        { "if": { "properties": { "operation": { "const": "Prepare" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/PrepareParams" } } } },
+        { "if": { "properties": { "operation": { "const": "AddOnce" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/AddOnceParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Stirring" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/StirringParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Temperature" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/TemperatureParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Mixing" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/MixingParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Crystallization" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/CrystallizationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Distillation" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/DistillationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Filtration" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/FiltrationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Centrifugation" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/CentrifugationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Evaporation" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/EvaporationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Dry" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/DryParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Fermentation" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/FermentationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Absorption" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/AbsorptionParams" } } } },
+        { "if": { "properties": { "operation": { "const": "IonExchange" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/IonExchangeParams" } } } },
+        { "if": { "properties": { "operation": { "const": "MembraneSeparation" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/MembraneSeparationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Washing" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/WashingParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Pulverization" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/PulverizationParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Weighing" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/WeighingParams" } } } },
+        { "if": { "properties": { "operation": { "const": "HeatExchange" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/HeatExchangeParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Setup" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/SetupParams" } } } },
+        { "if": { "properties": { "operation": { "const": "PreCleaning" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/CleaningParams" } } } },
+        { "if": { "properties": { "operation": { "const": "PostCleaning" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/CleaningParams" } } } },
+        { "if": { "properties": { "operation": { "const": "Disposal" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/DisposalParams" } } } },
+        { "if": { "properties": { "operation": { "const": "ManualStep" } } }, "then": { "properties": { "parameters": { "$ref": "#/$defs/ManualStepParams" } } } }
+      ]
+    },
+
+    "ParallelStep": {
+      "type": "object",
+      "description": "Steps that execute concurrently",
+      "required": ["parallel"],
+      "properties": {
+        "parallel": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/Step" }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "LoopStep": {
+      "type": "object",
+      "description": "Repeat a block of steps",
+      "required": ["loop"],
+      "properties": {
+        "loop": {
+          "type": "object",
+          "required": ["body"],
+          "properties": {
+            "iterations": { "type": "integer", "minimum": 1 },
+            "breakCondition": { "type": "string" },
+            "body": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/Step" }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "Quantity": {
+      "type": "object",
+      "description": "A physical quantity with value and unit",
+      "required": ["value", "unit"],
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "type": "string" }
+      }
+    },
+
+    "FlexibleQuantity": {
+      "description": "A quantity that may be numeric+unit or a descriptive string",
+      "oneOf": [
+        { "$ref": "#/$defs/Quantity" },
+        { "type": "string" }
+      ]
+    },
+
+    "Chemical": {
+      "type": "object",
+      "required": ["Name", "Amount"],
+      "properties": {
+        "Name": { "type": "string" },
+        "Amount": { "$ref": "#/$defs/Quantity" },
+        "CAS": { "type": "string" },
+        "MolWeight": { "$ref": "#/$defs/Quantity" },
+        "Role": { "type": "string" }
+      }
+    },
+
+    "PrepareParams": {
+      "type": "object",
+      "required": ["Chemicals"],
+      "properties": {
+        "Chemicals": { "type": "array", "items": { "$ref": "#/$defs/Chemical" }, "minItems": 1 },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "AddOnceParams": {
+      "type": "object",
+      "required": ["Chemical"],
+      "properties": {
+        "Chemical": { "$ref": "#/$defs/Chemical" },
+        "Timing": { "type": "string" },
+        "RateOfAddition": { "$ref": "#/$defs/FlexibleQuantity" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "Pressure": { "$ref": "#/$defs/Quantity" },
+        "pH": { "type": "number" },
+        "Solvent": { "type": "string" },
+        "ReactionEnvironment": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "StirringParams": {
+      "type": "object",
+      "required": ["StirringSpeed"],
+      "properties": {
+        "StirringSpeed": { "$ref": "#/$defs/Quantity" },
+        "StirringTime": { "$ref": "#/$defs/Quantity" },
+        "StirringDirection": { "type": "string", "enum": ["Clockwise", "Counterclockwise"] },
+        "StirrerDesign": { "type": "string" },
+        "StirrerSizeAndShape": { "type": "string" },
+        "ContainerGeometry": { "type": "string" },
+        "MaterialOfConstruction": { "type": "string" },
+        "OperationalLimits": { "type": "string" },
+        "Viscosity": { "$ref": "#/$defs/Quantity" },
+        "ShearRate": { "$ref": "#/$defs/Quantity" },
+        "AdditionalAgitationMechanisms": { "type": "string" },
+        "StirringRateProfiles": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "TemperatureParams": {
+      "type": "object",
+      "required": ["TargetTemperature"],
+      "properties": {
+        "TargetTemperature": { "$ref": "#/$defs/Quantity" },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "HeatingRate": { "$ref": "#/$defs/Quantity" },
+        "CoolingRate": { "$ref": "#/$defs/Quantity" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "MixingParams": {
+      "type": "object",
+      "properties": {
+        "Ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["Name", "Quantity"],
+            "properties": {
+              "Name": { "type": "string" },
+              "Quantity": { "$ref": "#/$defs/FlexibleQuantity" }
+            }
+          }
+        },
+        "MixingMethod": { "type": "string" },
+        "MixingTime": { "$ref": "#/$defs/Quantity" },
+        "MixingTemperature": { "$ref": "#/$defs/Quantity" },
+        "MixingSpeed": { "$ref": "#/$defs/Quantity" },
+        "MixingContainer": { "type": "string" },
+        "InertAtmosphere": { "type": "boolean" },
+        "PostMixingTreatment": { "type": "string" },
+        "HomogeneityTesting": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "CrystallizationParams": {
+      "type": "object",
+      "required": ["Compound"],
+      "properties": {
+        "Compound": { "type": "string" },
+        "Solvent": { "type": "string" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "CoolingRate": { "$ref": "#/$defs/Quantity" },
+        "StirringSpeed": { "$ref": "#/$defs/Quantity" },
+        "CrystallizationTime": { "$ref": "#/$defs/Quantity" },
+        "SeedCrystal": { "type": "string" },
+        "CrystalSize": { "$ref": "#/$defs/Quantity" },
+        "CrystalShape": { "type": "string" },
+        "CrystalPurity": { "$ref": "#/$defs/Quantity" },
+        "Yield": { "$ref": "#/$defs/Quantity" },
+        "pH": { "type": "number" },
+        "Additives": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "DistillationParams": {
+      "type": "object",
+      "required": ["Mixture"],
+      "properties": {
+        "Mixture": { "type": "string" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "Pressure": { "$ref": "#/$defs/Quantity" },
+        "HeatingRate": { "$ref": "#/$defs/Quantity" },
+        "CoolingRate": { "$ref": "#/$defs/Quantity" },
+        "RefluxRatio": { "$ref": "#/$defs/Quantity" },
+        "DistillateCollectors": { "type": "string" },
+        "SolventSelection": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "FiltrationParams": {
+      "type": "object",
+      "properties": {
+        "FilterType": { "type": "string" },
+        "PoreSize": { "$ref": "#/$defs/Quantity" },
+        "FeedSolution": { "type": "string" },
+        "FiltrationRate": { "$ref": "#/$defs/Quantity" },
+        "FilterArea": { "$ref": "#/$defs/Quantity" },
+        "FilterCakeThickness": { "$ref": "#/$defs/Quantity" },
+        "FiltrationTime": { "$ref": "#/$defs/Quantity" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "PressureOrVacuum": { "$ref": "#/$defs/Quantity" },
+        "PreFiltrationTreatment": { "type": "string" },
+        "CleaningAndMaintenance": { "type": "string" },
+        "FiltrationEfficiency": { "$ref": "#/$defs/Quantity" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "CentrifugationParams": {
+      "type": "object",
+      "required": ["Sample"],
+      "properties": {
+        "Sample": { "type": "string" },
+        "Speed": { "$ref": "#/$defs/Quantity" },
+        "Time": { "$ref": "#/$defs/Quantity" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "Pressure": { "$ref": "#/$defs/Quantity" },
+        "RotationDirection": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "EvaporationParams": {
+      "type": "object",
+      "required": ["Product"],
+      "properties": {
+        "Product": { "type": "string" },
+        "EvaporationMethod": { "type": "string" },
+        "EvaporationTemperature": { "$ref": "#/$defs/Quantity" },
+        "EvaporationTime": { "$ref": "#/$defs/Quantity" },
+        "Solvent": { "type": "string" },
+        "Concentration": { "$ref": "#/$defs/Quantity" },
+        "HeatingSource": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "DryParams": {
+      "type": "object",
+      "required": ["Product"],
+      "properties": {
+        "Product": { "type": "string" },
+        "DryingMethod": { "type": "string" },
+        "DryingTemperature": { "$ref": "#/$defs/Quantity" },
+        "DryingTime": { "$ref": "#/$defs/Quantity" },
+        "Humidity": { "$ref": "#/$defs/Quantity" },
+        "AirflowRate": { "$ref": "#/$defs/Quantity" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "FermentationParams": {
+      "type": "object",
+      "required": ["MicroorganismStrain"],
+      "properties": {
+        "MicroorganismStrain": { "type": "string" },
+        "InoculumSize": { "$ref": "#/$defs/Quantity" },
+        "Feedstock": { "type": "string" },
+        "NutrientComposition": { "type": "string" },
+        "pH": { "type": "number" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "AerationOrOxygenation": { "type": "string" },
+        "FermentationTime": { "$ref": "#/$defs/Quantity" },
+        "AgitationOrMixing": { "type": "string" },
+        "FermentationVesselType": { "type": "string" },
+        "ProductRecovery": { "type": "string" },
+        "YieldAndProductivity": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "AbsorptionParams": {
+      "type": "object",
+      "required": ["GasStream"],
+      "properties": {
+        "GasStream": { "type": "string" },
+        "LiquidPhase": { "type": "string" },
+        "Solvent": { "type": "string" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "Pressure": { "$ref": "#/$defs/Quantity" },
+        "MassTransferCoefficient": { "$ref": "#/$defs/Quantity" },
+        "ContactTime": { "$ref": "#/$defs/Quantity" },
+        "pH": { "type": "number" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "IonExchangeParams": {
+      "type": "object",
+      "required": ["IonExchangeResinType"],
+      "properties": {
+        "IonExchangeResinType": { "type": "string" },
+        "IonExchangeCapacity": { "$ref": "#/$defs/Quantity" },
+        "FeedSolution": { "type": "string" },
+        "ContactTime": { "$ref": "#/$defs/Quantity" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "FlowRate": { "$ref": "#/$defs/Quantity" },
+        "RegenerationMethod": { "type": "string" },
+        "pH": { "type": "number" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "MembraneSeparationParams": {
+      "type": "object",
+      "required": ["MembraneType"],
+      "properties": {
+        "MembraneType": { "type": "string" },
+        "MembraneMaterial": { "type": "string" },
+        "FeedSolution": { "type": "string" },
+        "OperatingPressure": { "$ref": "#/$defs/Quantity" },
+        "FeedFlowRate": { "$ref": "#/$defs/Quantity" },
+        "Temperature": { "$ref": "#/$defs/Quantity" },
+        "MembraneSurfaceArea": { "$ref": "#/$defs/Quantity" },
+        "CleaningAndMaintenance": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "WashingParams": {
+      "type": "object",
+      "required": ["MaterialToBeWashed"],
+      "properties": {
+        "MaterialToBeWashed": { "type": "string" },
+        "WashingSolventOrMedium": { "type": "string" },
+        "WashingTemperature": { "$ref": "#/$defs/Quantity" },
+        "WashingTime": { "$ref": "#/$defs/Quantity" },
+        "NumberOfWashingSteps": { "type": "integer", "minimum": 1 },
+        "WashingVolumeOrRatio": { "$ref": "#/$defs/Quantity" },
+        "AgitationOrMixing": { "type": "string" },
+        "Drying": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "PulverizationParams": {
+      "type": "object",
+      "required": ["FeedMaterial"],
+      "properties": {
+        "FeedMaterial": { "type": "string" },
+        "ParticleSizeRequirement": { "$ref": "#/$defs/Quantity" },
+        "PulverizationEquipment": { "type": "string" },
+        "PulverizationTime": { "$ref": "#/$defs/Quantity" },
+        "PulverizationSpeed": { "$ref": "#/$defs/Quantity" },
+        "CoolingOrHeating": { "type": "string" },
+        "DustCollection": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "WeighingParams": {
+      "type": "object",
+      "required": ["Substance", "Amount"],
+      "properties": {
+        "Substance": { "type": "string" },
+        "Amount": { "$ref": "#/$defs/Quantity" },
+        "BalanceType": { "type": "string" },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "HeatExchangeParams": {
+      "type": "object",
+      "properties": {
+        "HotFluid": { "type": "string" },
+        "ColdFluid": { "type": "string" },
+        "InletTemperatureHot": { "$ref": "#/$defs/Quantity" },
+        "InletTemperatureCold": { "$ref": "#/$defs/Quantity" },
+        "OutletTemperatureHot": { "$ref": "#/$defs/Quantity" },
+        "OutletTemperatureCold": { "$ref": "#/$defs/Quantity" },
+        "FlowRateHot": { "$ref": "#/$defs/Quantity" },
+        "FlowRateCold": { "$ref": "#/$defs/Quantity" },
+        "HeatExchangerType": { "type": "string" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "SetupParams": {
+      "type": "object",
+      "properties": {
+        "ExperimentName": { "type": "string" },
+        "SetupInstructions": { "type": "string" },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "Equipment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "CleaningParams": {
+      "type": "object",
+      "properties": {
+        "Materials": { "type": "string" },
+        "Procedure": { "type": "string" },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "Environment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "DisposalParams": {
+      "type": "object",
+      "required": ["WasteType"],
+      "properties": {
+        "WasteType": { "type": "string" },
+        "DisposalMethod": { "type": "string" },
+        "Amount": { "$ref": "#/$defs/Quantity" },
+        "Duration": { "$ref": "#/$defs/Quantity" },
+        "Environment": { "type": "string" },
+        "SafetyMeasures": { "type": "string" }
+      }
+    },
+
+    "ManualStepParams": {
+      "type": "object",
+      "properties": {
+        "Description": { "type": "string" },
+        "Timing": { "type": "string" },
+        "Criteria": { "type": "string" }
+      }
+    }
+  }
+}

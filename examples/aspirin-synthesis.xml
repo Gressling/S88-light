@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Aspirin Synthesis — S88-light Example Recipe
+  Validates against s88-light.xsd
+-->
+<Recipe xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="s88-light.xsd">
+
+  <Metadata>
+    <Name>Aspirin Synthesis</Name>
+    <Version>1.0</Version>
+    <Author>S88-light Team</Author>
+    <Date>2026-02-16</Date>
+    <Description>Simplified aspirin synthesis recipe demonstrating S88-light vocabulary</Description>
+    <Project>S88-NG Examples</Project>
+  </Metadata>
+
+  <Sequence>
+
+    <!-- Step 1: Prepare reactor with solvents -->
+    <Prepare device="defaultReactor">
+      <Chemical>
+        <Name>Toluol</Name>
+        <Amount unit="ml">250</Amount>
+      </Chemical>
+      <Chemical>
+        <Name>Propanol</Name>
+        <Amount unit="l">0.5</Amount>
+      </Chemical>
+    </Prepare>
+
+    <!-- Step 2: Stirring setup -->
+    <Stirring>
+      <StirringSpeed unit="RPM">500</StirringSpeed>
+      <StirringTime unit="min">60</StirringTime>
+      <StirringDirection>Clockwise</StirringDirection>
+    </Stirring>
+
+    <!-- Step 3: Heat to 50 °C -->
+    <Temperature name="RampUp50">
+      <TargetTemperature unit="°C">50</TargetTemperature>
+      <Duration unit="s">1500</Duration>
+    </Temperature>
+
+    <!-- Steps 4a + 4b: Add reactants in parallel -->
+    <Parallel>
+      <AddOnce>
+        <Chemical>
+          <Name>Acetic anhydride</Name>
+          <Amount unit="ml">5</Amount>
+        </Chemical>
+        <Timing>Immediate</Timing>
+        <RateOfAddition unit="mL/min">2</RateOfAddition>
+      </AddOnce>
+      <AddOnce>
+        <Chemical>
+          <Name>Salicylic acid</Name>
+          <Amount unit="g">4</Amount>
+        </Chemical>
+        <Timing>Immediate</Timing>
+        <RateOfAddition unit="g/min">1</RateOfAddition>
+      </AddOnce>
+    </Parallel>
+
+    <!-- Step 5: Manual endpoint -->
+    <ManualStep>
+      <Description>Monitor reaction completion</Description>
+      <Timing>Operator judgment</Timing>
+      <Criteria>Reaction complete based on TLC analysis</Criteria>
+    </ManualStep>
+
+  </Sequence>
+</Recipe>

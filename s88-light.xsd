@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  S88-light Unified Recipe Schema
+  ================================
+  This is the master schema for composing complete S88-light recipes.
+  A recipe is a sequence of unit operations that can be executed in order,
+  in parallel, or in loops.
+
+  Version: 1.0.0
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- ================================================================== -->
+  <!-- REUSABLE SIMPLE TYPES                                               -->
+  <!-- ================================================================== -->
+
+  <!-- A physical quantity: numeric value with a unit attribute -->
+  <xs:complexType name="QuantityType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="unit" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- A quantity that may also be expressed as a string (e.g. "All at once") -->
+  <xs:complexType name="FlexibleQuantityType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="unit" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Duration in seconds (decimal to allow sub-second) -->
+  <xs:complexType name="DurationType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="unit" type="xs:string" default="s"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Temperature value with optional unit (default °C) -->
+  <xs:complexType name="TemperatureType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="unit" type="xs:string" default="°C"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- CHEMICAL / MATERIAL                                                 -->
+  <!-- ================================================================== -->
+
+  <xs:complexType name="ChemicalType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Amount" type="FlexibleQuantityType"/>
+      <xs:element name="CAS" type="xs:string" minOccurs="0"/>
+      <xs:element name="MolWeight" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Role" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- UNIT OPERATIONS                                                     -->
+  <!-- ================================================================== -->
+
+  <!-- === Prepare === -->
+  <xs:complexType name="PrepareType">
+    <xs:sequence>
+      <xs:element name="Chemical" type="ChemicalType" maxOccurs="unbounded"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="device" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- === AddOnce === -->
+  <xs:complexType name="AddOnceType">
+    <xs:sequence>
+      <xs:element name="Chemical" type="ChemicalType"/>
+      <xs:element name="Timing" type="xs:string" minOccurs="0"/>
+      <xs:element name="RateOfAddition" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="Pressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="pH" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="Solvent" type="xs:string" minOccurs="0"/>
+      <xs:element name="ReactionEnvironment" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Stirring === -->
+  <xs:complexType name="StirringType">
+    <xs:sequence>
+      <xs:element name="StirringSpeed" type="FlexibleQuantityType"/>
+      <xs:element name="StirringTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="StirringDirection" type="xs:string" minOccurs="0"/>
+      <xs:element name="StirrerDesign" type="xs:string" minOccurs="0"/>
+      <xs:element name="StirrerSizeAndShape" type="xs:string" minOccurs="0"/>
+      <xs:element name="ContainerGeometry" type="xs:string" minOccurs="0"/>
+      <xs:element name="MaterialOfConstruction" type="xs:string" minOccurs="0"/>
+      <xs:element name="OperationalLimits" type="xs:string" minOccurs="0"/>
+      <xs:element name="Viscosity" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="ShearRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="AdditionalAgitationMechanisms" type="xs:string" minOccurs="0"/>
+      <xs:element name="StirringRateProfiles" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Temperature === -->
+  <xs:complexType name="TemperatureControlType">
+    <xs:sequence>
+      <xs:element name="TargetTemperature" type="TemperatureType"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="HeatingRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CoolingRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- === Mixing === -->
+  <xs:complexType name="MixingType">
+    <xs:sequence>
+      <xs:element name="Ingredients" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Ingredient" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Name" type="xs:string"/>
+                  <xs:element name="Quantity" type="FlexibleQuantityType"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="MixingMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="MixingTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="MixingTemperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="MixingSpeed" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="MixingContainer" type="xs:string" minOccurs="0"/>
+      <xs:element name="InertAtmosphere" type="xs:boolean" minOccurs="0"/>
+      <xs:element name="PostMixingTreatment" type="xs:string" minOccurs="0"/>
+      <xs:element name="HomogeneityTesting" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Crystallization === -->
+  <xs:complexType name="CrystallizationType">
+    <xs:sequence>
+      <xs:element name="Compound" type="xs:string"/>
+      <xs:element name="Solvent" type="xs:string" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="CoolingRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="StirringSpeed" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CrystallizationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="SeedCrystal" type="xs:string" minOccurs="0"/>
+      <xs:element name="CrystalSize" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CrystalShape" type="xs:string" minOccurs="0"/>
+      <xs:element name="CrystalPurity" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Yield" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="pH" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="Additives" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Distillation === -->
+  <xs:complexType name="DistillationType">
+    <xs:sequence>
+      <xs:element name="Mixture" type="xs:string"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="Pressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="HeatingRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CoolingRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="RefluxRatio" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="DistillateCollectors" type="xs:string" minOccurs="0"/>
+      <xs:element name="SolventSelection" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Filtration === -->
+  <xs:complexType name="FiltrationType">
+    <xs:sequence>
+      <xs:element name="FilterType" type="xs:string" minOccurs="0"/>
+      <xs:element name="PoreSize" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FeedSolution" type="xs:string" minOccurs="0"/>
+      <xs:element name="FiltrationRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FilterArea" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FilterCakeThickness" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FiltrationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="PressureOrVacuum" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="PreFiltrationTreatment" type="xs:string" minOccurs="0"/>
+      <xs:element name="CleaningAndMaintenance" type="xs:string" minOccurs="0"/>
+      <xs:element name="FiltrationEfficiency" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Centrifugation === -->
+  <xs:complexType name="CentrifugationType">
+    <xs:sequence>
+      <xs:element name="Sample" type="xs:string"/>
+      <xs:element name="Speed" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Time" type="DurationType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="Pressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="RotationDirection" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Evaporation === -->
+  <xs:complexType name="EvaporationType">
+    <xs:sequence>
+      <xs:element name="Product" type="xs:string"/>
+      <xs:element name="EvaporationMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="EvaporationTemperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="EvaporationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="Solvent" type="xs:string" minOccurs="0"/>
+      <xs:element name="Concentration" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="HeatingSource" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Drying === -->
+  <xs:complexType name="DryType">
+    <xs:sequence>
+      <xs:element name="Product" type="xs:string"/>
+      <xs:element name="DryingMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="DryingTemperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="DryingTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="Humidity" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="AirflowRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Fermentation === -->
+  <xs:complexType name="FermentationType">
+    <xs:sequence>
+      <xs:element name="MicroorganismStrain" type="xs:string"/>
+      <xs:element name="InoculumSize" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Feedstock" type="xs:string" minOccurs="0"/>
+      <xs:element name="NutrientComposition" type="xs:string" minOccurs="0"/>
+      <xs:element name="pH" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="AerationOrOxygenation" type="xs:string" minOccurs="0"/>
+      <xs:element name="FermentationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="AgitationOrMixing" type="xs:string" minOccurs="0"/>
+      <xs:element name="FermentationVesselType" type="xs:string" minOccurs="0"/>
+      <xs:element name="ProductRecovery" type="xs:string" minOccurs="0"/>
+      <xs:element name="YieldAndProductivity" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Absorption === -->
+  <xs:complexType name="AbsorptionType">
+    <xs:sequence>
+      <xs:element name="GasStream" type="xs:string"/>
+      <xs:element name="LiquidPhase" type="xs:string" minOccurs="0"/>
+      <xs:element name="Solvent" type="xs:string" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="Pressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="MassTransferCoefficient" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="ContactTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="pH" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === IonExchange === -->
+  <xs:complexType name="IonExchangeType">
+    <xs:sequence>
+      <xs:element name="IonExchangeResinType" type="xs:string"/>
+      <xs:element name="IonExchangeCapacity" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FeedSolution" type="xs:string" minOccurs="0"/>
+      <xs:element name="ContactTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="FlowRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="RegenerationMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="pH" type="xs:decimal" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === MembraneSeparation === -->
+  <xs:complexType name="MembraneSeparationType">
+    <xs:sequence>
+      <xs:element name="MembraneType" type="xs:string"/>
+      <xs:element name="MembraneMaterial" type="xs:string" minOccurs="0"/>
+      <xs:element name="FeedSolution" type="xs:string" minOccurs="0"/>
+      <xs:element name="OperatingPressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FeedFlowRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="MembraneSurfaceArea" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CleaningAndMaintenance" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Washing === -->
+  <xs:complexType name="WashingType">
+    <xs:sequence>
+      <xs:element name="MaterialToBeWashed" type="xs:string"/>
+      <xs:element name="WashingSolventOrMedium" type="xs:string" minOccurs="0"/>
+      <xs:element name="WashingTemperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="WashingTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="NumberOfWashingSteps" type="xs:integer" minOccurs="0"/>
+      <xs:element name="WashingVolumeOrRatio" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="AgitationOrMixing" type="xs:string" minOccurs="0"/>
+      <xs:element name="Drying" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Pulverization === -->
+  <xs:complexType name="PulverizationType">
+    <xs:sequence>
+      <xs:element name="FeedMaterial" type="xs:string"/>
+      <xs:element name="ParticleSizeRequirement" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="PulverizationEquipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="PulverizationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="PulverizationSpeed" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="CoolingOrHeating" type="xs:string" minOccurs="0"/>
+      <xs:element name="DustCollection" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Weighing === -->
+  <xs:complexType name="WeighingType">
+    <xs:sequence>
+      <xs:element name="Substance" type="xs:string"/>
+      <xs:element name="Amount" type="FlexibleQuantityType"/>
+      <xs:element name="BalanceType" type="xs:string" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === HeatExchange === -->
+  <xs:complexType name="HeatExchangeType">
+    <xs:sequence>
+      <xs:element name="HotFluid" type="xs:string" minOccurs="0"/>
+      <xs:element name="ColdFluid" type="xs:string" minOccurs="0"/>
+      <xs:element name="InletTemperatureHot" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="InletTemperatureCold" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="OutletTemperatureHot" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="OutletTemperatureCold" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="FlowRateHot" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="FlowRateCold" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="HeatExchangerType" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Setup === -->
+  <xs:complexType name="SetupType">
+    <xs:sequence>
+      <xs:element name="ExperimentName" type="xs:string" minOccurs="0"/>
+      <xs:element name="SetupInstructions" type="xs:string" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Cleaning (Pre/Post) === -->
+  <xs:complexType name="CleaningType">
+    <xs:sequence>
+      <xs:element name="Materials" type="xs:string" minOccurs="0"/>
+      <xs:element name="Procedure" type="xs:string" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Environment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Disposal === -->
+  <xs:complexType name="DisposalType">
+    <xs:sequence>
+      <xs:element name="WasteType" type="xs:string"/>
+      <xs:element name="DisposalMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="Amount" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Environment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === ManualStep (for ManualEnd and other human-in-the-loop steps) === -->
+  <xs:complexType name="ManualStepType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string" minOccurs="0"/>
+      <xs:element name="Timing" type="xs:string" minOccurs="0"/>
+      <xs:element name="Criteria" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- OPERATION CHOICE GROUP                                              -->
+  <!-- ================================================================== -->
+  <!-- This group lists every valid unit operation element.                -->
+
+  <xs:group name="OperationGroup">
+    <xs:choice>
+      <xs:element name="Prepare" type="PrepareType"/>
+      <xs:element name="AddOnce" type="AddOnceType"/>
+      <xs:element name="Stirring" type="StirringType"/>
+      <xs:element name="Temperature" type="TemperatureControlType"/>
+      <xs:element name="Mixing" type="MixingType"/>
+      <xs:element name="Crystallization" type="CrystallizationType"/>
+      <xs:element name="Distillation" type="DistillationType"/>
+      <xs:element name="Filtration" type="FiltrationType"/>
+      <xs:element name="Centrifugation" type="CentrifugationType"/>
+      <xs:element name="Evaporation" type="EvaporationType"/>
+      <xs:element name="Dry" type="DryType"/>
+      <xs:element name="Fermentation" type="FermentationType"/>
+      <xs:element name="Absorption" type="AbsorptionType"/>
+      <xs:element name="IonExchange" type="IonExchangeType"/>
+      <xs:element name="MembraneSeparation" type="MembraneSeparationType"/>
+      <xs:element name="Washing" type="WashingType"/>
+      <xs:element name="Pulverization" type="PulverizationType"/>
+      <xs:element name="Weighing" type="WeighingType"/>
+      <xs:element name="HeatExchange" type="HeatExchangeType"/>
+      <xs:element name="Setup" type="SetupType"/>
+      <xs:element name="PreCleaning" type="CleaningType"/>
+      <xs:element name="PostCleaning" type="CleaningType"/>
+      <xs:element name="Disposal" type="DisposalType"/>
+      <xs:element name="ManualStep" type="ManualStepType"/>
+    </xs:choice>
+  </xs:group>
+
+  <!-- ================================================================== -->
+  <!-- SEQUENCE / ORCHESTRATION                                            -->
+  <!-- ================================================================== -->
+
+  <!-- A step is either a single operation, a Parallel block, or a Loop -->
+  <xs:group name="StepGroup">
+    <xs:choice>
+      <xs:group ref="OperationGroup"/>
+      <xs:element name="Parallel" type="ParallelType"/>
+      <xs:element name="Loop" type="LoopType"/>
+    </xs:choice>
+  </xs:group>
+
+  <!-- Parallel: all children execute concurrently -->
+  <xs:complexType name="ParallelType">
+    <xs:sequence>
+      <xs:group ref="StepGroup" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Loop: repeat children N times or until a break condition -->
+  <xs:complexType name="LoopType">
+    <xs:sequence>
+      <xs:element name="Iterations" type="xs:integer" minOccurs="0"/>
+      <xs:element name="BreakCondition" type="xs:string" minOccurs="0"/>
+      <xs:element name="Body">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:group ref="StepGroup" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- RECIPE (ROOT ELEMENT)                                               -->
+  <!-- ================================================================== -->
+
+  <xs:element name="Recipe">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Metadata" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" type="xs:string" minOccurs="0"/>
+              <xs:element name="Version" type="xs:string" minOccurs="0"/>
+              <xs:element name="Author" type="xs:string" minOccurs="0"/>
+              <xs:element name="Date" type="xs:date" minOccurs="0"/>
+              <xs:element name="Description" type="xs:string" minOccurs="0"/>
+              <xs:element name="Project" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Sequence">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:group ref="StepGroup" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

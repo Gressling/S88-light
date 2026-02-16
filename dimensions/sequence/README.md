@@ -1,32 +1,61 @@
 # Sequence
 
-The orchestration uses UML eqivalent elements and only has the tag
-`<sequence>`. Whenever this tag occurs it spans a parallel process (with
-the only exception if it is the first node.)
+Orchestration of unit operations in S88-light uses the `<Sequence>` element
+(defined in `s88-light.xsd` at the repository root). Steps execute in order.
+Use `<Parallel>` to run steps concurrently, and `<Loop>` to repeat steps.
 
-## Example
+> **Note:** The legacy `Sequences.xsd` in this directory used `<Sequences>` 
+> (plural) as root. The unified schema now uses `<Recipe>` → `<Sequence>`.
+
+## Example (unified schema)
+
 ~~~ xml
-<xml>
+<Recipe xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../s88-light.xsd">
+  <Sequence>
 
-<Sequence>
-<UnitOperation0/>
-<Sequence loop="0">
-    <UnitOperation1/>
-    <UnitOperation2 break="temp%gt70"/>
-</Sequence>
-  <Sequence id="1">
-    <UnitOperation3a/>
-    <Sequence id="2">
-      <UnitOperation3b/>
-    </Sequence>
-    <Sequence id="3">
-      <UnitOperation3bc>
-    </Sequence>
+    <!-- Step 0: runs first -->
+    <Setup>
+      <ExperimentName>Example</ExperimentName>
+    </Setup>
+
+    <!-- Steps 1-2: loop with break condition -->
+    <Loop>
+      <Iterations>10</Iterations>
+      <BreakCondition>temperature &gt; 70</BreakCondition>
+      <Body>
+        <Stirring>
+          <StirringSpeed unit="RPM">500</StirringSpeed>
+        </Stirring>
+        <Temperature name="heat">
+          <TargetTemperature unit="°C">60</TargetTemperature>
+        </Temperature>
+      </Body>
+    </Loop>
+
+    <!-- Steps 3a + 3b: parallel execution -->
+    <Parallel>
+      <AddOnce>
+        <Chemical>
+          <Name>Reagent A</Name>
+          <Amount unit="ml">10</Amount>
+        </Chemical>
+      </AddOnce>
+      <AddOnce>
+        <Chemical>
+          <Name>Reagent B</Name>
+          <Amount unit="g">5</Amount>
+        </Chemical>
+      </AddOnce>
+    </Parallel>
+
+    <!-- Step 4: final -->
+    <Filtration>
+      <FilterType>Vacuum</FilterType>
+    </Filtration>
+
   </Sequence>
-<UnitOperation4/>
-</Sequence>
-
-</xml>
+</Recipe>
 ~~~
 ![image](https://github.com/Gressling/S88-NG/assets/21124662/97d4b405-8fdb-430e-aa9e-0c59ebf306a9)
 

@@ -1,0 +1,79 @@
+{
+  "$schema": "s88-light.schema.json",
+  "Metadata": {
+    "Name": "Aspirin Synthesis",
+    "Version": "1.0",
+    "Author": "S88-light Team",
+    "Date": "2026-02-16",
+    "Description": "Simplified aspirin synthesis recipe demonstrating S88-light vocabulary",
+    "Project": "S88-NG Examples"
+  },
+  "Sequence": [
+    {
+      "operation": "Prepare",
+      "device": "defaultReactor",
+      "parameters": {
+        "Chemicals": [
+          {
+            "Name": "Toluol",
+            "Amount": { "value": 250, "unit": "ml" }
+          },
+          {
+            "Name": "Propanol",
+            "Amount": { "value": 0.5, "unit": "l" }
+          }
+        ]
+      }
+    },
+    {
+      "operation": "Stirring",
+      "parameters": {
+        "StirringSpeed": { "value": 500, "unit": "RPM" },
+        "StirringTime": { "value": 60, "unit": "min" },
+        "StirringDirection": "Clockwise"
+      }
+    },
+    {
+      "operation": "Temperature",
+      "name": "RampUp50",
+      "parameters": {
+        "TargetTemperature": { "value": 50, "unit": "°C" },
+        "Duration": { "value": 1500, "unit": "s" }
+      }
+    },
+    {
+      "parallel": [
+        {
+          "operation": "AddOnce",
+          "parameters": {
+            "Chemical": {
+              "Name": "Acetic anhydride",
+              "Amount": { "value": 5, "unit": "ml" }
+            },
+            "Timing": "Immediate",
+            "RateOfAddition": { "value": 2, "unit": "mL/min" }
+          }
+        },
+        {
+          "operation": "AddOnce",
+          "parameters": {
+            "Chemical": {
+              "Name": "Salicylic acid",
+              "Amount": { "value": 4, "unit": "g" }
+            },
+            "Timing": "Immediate",
+            "RateOfAddition": { "value": 1, "unit": "g/min" }
+          }
+        }
+      ]
+    },
+    {
+      "operation": "ManualStep",
+      "parameters": {
+        "Description": "Monitor reaction completion",
+        "Timing": "Operator judgment",
+        "Criteria": "Reaction complete based on TLC analysis"
+      }
+    }
+  ]
+}

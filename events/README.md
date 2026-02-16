@@ -65,12 +65,12 @@ Certainly. In the context of 'Event Frames', the concept emphasizes the duration
 
 ```xml
 <?xml version="1.0"?>
-<event:root xmlns:event="http://www.example.org/event" xmlns:frame="http://www.example.org/eventframe">
+<event:root xmlns:event="http://www.example.org/event" xmlns:eventframe="http://www.example.org/eventframe">
     <eventframe:basicEvent>
-        <eventframe:id>1</event:id>
-        <eventframe:description>Sample Basic Event Description</event:description>
-        <eventframe:startTimestamp>2023-08-08T12:34:56Z</frame:startTimestamp>
-        <eventframe:endTimestamp>2023-08-08T14:34:56Z</frame:endTimestamp>
+        <eventframe:id>1</eventframe:id>
+        <eventframe:description>Sample Basic Event Description</eventframe:description>
+        <eventframe:startTimestamp>2023-08-08T12:34:56Z</eventframe:startTimestamp>
+        <eventframe:endTimestamp>2023-08-08T14:34:56Z</eventframe:endTimestamp>
     </eventframe:basicEvent>
 </event:root>
 ```
