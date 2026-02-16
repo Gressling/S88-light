@@ -14,7 +14,7 @@ Per-operation pages with examples are in [`dimensions/1_operations/`](../dimensi
 
 ---
 
-# API Operations
+# Manual Operations
 
 ## Prepare
 Prepare raw materials before processing.
@@ -40,6 +40,10 @@ Single addition of a chemical to the process.
 | Solvent | string |
 | ReactionEnvironment | string |
 | Equipment | string |
+
+---
+
+# API Operations
 
 ## Stirring
 Mechanical agitation.
@@ -243,6 +247,10 @@ Pressure-driven membrane process.
 | CleaningAndMaintenance | string |
 | Equipment | string |
 
+---
+
+*(Manual operations continued)*
+
 ## Washing
 Impurity removal by solvent wash.
 
@@ -272,7 +280,7 @@ Size reduction by mechanical grinding.
 | DustCollection | string |
 
 ## Weighing
-Mass determination of a substance.
+Mass determination of a substance. *(Manual)*
 
 | Field | Type |
 |---|---|
@@ -298,7 +306,7 @@ Counter-/co-current heat transfer between two fluid streams.
 | Equipment | string |
 
 ## Setup
-Equipment preparation before the experiment.
+Equipment preparation before the experiment. *(Manual)*
 
 | Field | Type |
 |---|---|
@@ -308,7 +316,7 @@ Equipment preparation before the experiment.
 | Equipment | string |
 
 ## PreCleaning / PostCleaning
-Equipment cleaning before or after the process. Both share `CleaningType`.
+Equipment cleaning before or after the process. Both share `CleaningType`. *(Manual)*
 
 | Field | Type |
 |---|---|
@@ -318,7 +326,7 @@ Equipment cleaning before or after the process. Both share `CleaningType`.
 | Environment | string |
 
 ## Disposal
-Waste handling and disposal.
+Waste handling and disposal. *(Manual)*
 
 | Field | Type |
 |---|---|
