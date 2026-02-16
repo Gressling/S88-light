@@ -424,6 +424,152 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!-- === Extraction === -->
+  <xs:complexType name="ExtractionType">
+    <xs:sequence>
+      <xs:element name="Solute" type="xs:string"/>
+      <xs:element name="SourcePhase" type="xs:string" minOccurs="0"/>
+      <xs:element name="ExtractingPhase" type="xs:string" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="ExtractionTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="NumberOfStages" type="xs:integer" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Solvent === -->
+  <xs:complexType name="SolventType">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Amount" type="FlexibleQuantityType"/>
+      <xs:element name="Purity" type="xs:string" minOccurs="0"/>
+      <xs:element name="CAS" type="xs:string" minOccurs="0"/>
+      <xs:element name="Supplier" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === PAT (Process Analytical Technology) === -->
+  <xs:complexType name="PATType">
+    <xs:sequence>
+      <xs:element name="AnalyticalMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="MeasurementFrequency" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === IPC (In-Process Control) === -->
+  <xs:complexType name="IPCType">
+    <xs:sequence>
+      <xs:element name="TestMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="Sample" type="xs:string" minOccurs="0"/>
+      <xs:element name="Specification" type="xs:string" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === RollerCompactor === -->
+  <xs:complexType name="RollerCompactorType">
+    <xs:sequence>
+      <xs:element name="FeedMaterial" type="xs:string"/>
+      <xs:element name="RollPressure" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="RollSpeed" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="GapWidth" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="GranuleSize" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === Coating === -->
+  <xs:complexType name="CoatingType">
+    <xs:sequence>
+      <xs:element name="CoreMaterial" type="xs:string"/>
+      <xs:element name="CoatingMaterial" type="xs:string" minOccurs="0"/>
+      <xs:element name="CoatingMethod" type="xs:string" minOccurs="0"/>
+      <xs:element name="SprayRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Temperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === FluidBedGranulator === -->
+  <xs:complexType name="FluidBedGranulatorType">
+    <xs:sequence>
+      <xs:element name="FeedMaterial" type="xs:string"/>
+      <xs:element name="BinderSolution" type="xs:string" minOccurs="0"/>
+      <xs:element name="AirFlowRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="InletTemperature" type="TemperatureType" minOccurs="0"/>
+      <xs:element name="SprayRate" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+      <xs:element name="GranuleSize" type="FlexibleQuantityType" minOccurs="0"/>
+      <xs:element name="Equipment" type="xs:string" minOccurs="0"/>
+      <xs:element name="SafetyMeasures" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === EmptyOperation === -->
+  <xs:complexType name="EmptyOperationType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === GenericActor === -->
+  <xs:complexType name="GenericActorType">
+    <xs:sequence>
+      <xs:element name="DeviceId" type="xs:string" minOccurs="0"/>
+      <xs:element name="Command" type="xs:string" minOccurs="0"/>
+      <xs:element name="Parameters" type="xs:string" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === GenericSensor === -->
+  <xs:complexType name="GenericSensorType">
+    <xs:sequence>
+      <xs:element name="DeviceId" type="xs:string" minOccurs="0"/>
+      <xs:element name="SensorType" type="xs:string" minOccurs="0"/>
+      <xs:element name="MeasurementInterval" type="DurationType" minOccurs="0"/>
+      <xs:element name="Duration" type="DurationType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === ManualInput === -->
+  <xs:complexType name="ManualInputType">
+    <xs:sequence>
+      <xs:element name="Prompt" type="xs:string" minOccurs="0"/>
+      <xs:element name="InputType" type="xs:string" minOccurs="0"/>
+      <xs:element name="DefaultValue" type="xs:string" minOccurs="0"/>
+      <xs:element name="Timeout" type="DurationType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === EventRecorder === -->
+  <xs:complexType name="EventRecorderType">
+    <xs:sequence>
+      <xs:element name="EventType" type="xs:string" minOccurs="0"/>
+      <xs:element name="Description" type="xs:string" minOccurs="0"/>
+      <xs:element name="Timestamp" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- === SingleSpectrum === -->
+  <xs:complexType name="SingleSpectrumType">
+    <xs:sequence>
+      <xs:element name="Instrument" type="xs:string" minOccurs="0"/>
+      <xs:element name="WavelengthRange" type="xs:string" minOccurs="0"/>
+      <xs:element name="IntegrationTime" type="DurationType" minOccurs="0"/>
+      <xs:element name="Averages" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
   <!-- ================================================================== -->
   <!-- OPERATION CHOICE GROUP                                              -->
   <!-- ================================================================== -->
@@ -455,6 +601,20 @@
       <xs:element name="PostCleaning" type="CleaningType"/>
       <xs:element name="Disposal" type="DisposalType"/>
       <xs:element name="ManualStep" type="ManualStepType"/>
+      <!-- New operations (wiki-standard) -->
+      <xs:element name="Extraction" type="ExtractionType"/>
+      <xs:element name="Solvent" type="SolventType"/>
+      <xs:element name="PAT" type="PATType"/>
+      <xs:element name="IPC" type="IPCType"/>
+      <xs:element name="RollerCompactor" type="RollerCompactorType"/>
+      <xs:element name="Coating" type="CoatingType"/>
+      <xs:element name="FluidBedGranulator" type="FluidBedGranulatorType"/>
+      <xs:element name="EmptyOperation" type="EmptyOperationType"/>
+      <xs:element name="GenericActor" type="GenericActorType"/>
+      <xs:element name="GenericSensor" type="GenericSensorType"/>
+      <xs:element name="ManualInput" type="ManualInputType"/>
+      <xs:element name="EventRecorder" type="EventRecorderType"/>
+      <xs:element name="SingleSpectrum" type="SingleSpectrumType"/>
     </xs:choice>
   </xs:group>
 
